@@ -189,7 +189,7 @@ public class MultiBoxTracker {
 
       final String labelString =
           !TextUtils.isEmpty(recognition.title)
-              ? String.format("%s %.2f", recognition.title, recognition.detectionConfidence)
+              ? String.format("检测到：%s 匹配度：%.2f ", recognition.title, recognition.detectionConfidence)
               : String.format("%.2f", recognition.detectionConfidence);
       borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.bottom, labelString);
     }
@@ -218,7 +218,7 @@ public class MultiBoxTracker {
         String message =
             "Object tracking support not found. "
                 + "See tensorflow/examples/android/README.md for details.";
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+//        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
         logger.e(message);
       }
     }
