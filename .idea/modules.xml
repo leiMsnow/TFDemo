@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TFDemo.iml" filepath="$PROJECT_DIR$/TFDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tfsdk/tfsdk.iml" filepath="$PROJECT_DIR$/tfsdk/tfsdk.iml" />
     </modules>
   </component>
 </project>
