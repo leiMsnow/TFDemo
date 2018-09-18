@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader;
+import android.os.Environment;
 import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
@@ -26,7 +27,8 @@ public class DetectActivity extends CameraActivity implements ImageReader.OnImag
 
     private static final int TF_OD_API_INPUT_SIZE = 300;
     private static final String TF_OD_API_MODEL_FILE =
-            "file:///android_asset/ssd_mobilenet_v1_android_export.pb";
+//            "file:///android_asset/ssd_mobilenet_v1_android_export.pb";
+            Environment.getExternalStorageDirectory() + "/A_tf/deExport.pb";
     private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco_labels_list.txt";
 
     private enum DetectorMode {
