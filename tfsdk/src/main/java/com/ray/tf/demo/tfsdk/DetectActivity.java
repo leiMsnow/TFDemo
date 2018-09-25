@@ -1,5 +1,9 @@
 package com.ray.tf.demo.tfsdk;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,7 +12,10 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader;
+import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
@@ -26,9 +33,7 @@ public class DetectActivity extends CameraActivity implements ImageReader.OnImag
     private static final Logger LOGGER = new Logger();
 
     private static final int TF_OD_API_INPUT_SIZE = 300;
-    private static final String TF_OD_API_MODEL_FILE =
-//            "file:///android_asset/ssd_mobilenet_v1_android_export.pb";
-            Environment.getExternalStorageDirectory() + "/A_tf/deExport.pb";
+    private static String TF_OD_API_MODEL_FILE = "";
     private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco_labels_list.txt";
 
     private enum DetectorMode {
@@ -66,7 +71,17 @@ public class DetectActivity extends CameraActivity implements ImageReader.OnImag
     private byte[] luminanceCopy;
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        TF_OD_API_MODEL_FILE = FileUtils.getDefaultDirectory(this, "dtf").getAbsolutePath() + "/export.pb";
+    }
+
+    @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
+        startDetectActivity(size, rotation);
+    }
+
+    private void startDetectActivity(final Size size, final int rotation) {
         final float textSizePx =
                 TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
@@ -77,10 +92,12 @@ public class DetectActivity extends CameraActivity implements ImageReader.OnImag
 
         int cropSize = TF_OD_API_INPUT_SIZE;
         try {
+            Log.i("Copy", "开始加载");
             detector = TensorFlowObjectDetectionAPIModel.create(
                     getAssets(), TF_OD_API_MODEL_FILE, TF_OD_API_LABELS_FILE, TF_OD_API_INPUT_SIZE);
             cropSize = TF_OD_API_INPUT_SIZE;
         } catch (final IOException e) {
+            Log.i("Copy", "加载失败");
             LOGGER.e("Exception initializing classifier!", e);
             Toast toast =
                     Toast.makeText(

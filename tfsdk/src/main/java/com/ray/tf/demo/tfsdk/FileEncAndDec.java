@@ -64,11 +64,12 @@ public class FileEncAndDec {
     }
 
 
-    public static String EncFile(InputStream fis, File encFile) throws Exception {
+    public static String EncFile(InputStream fis, String encFile) throws Exception {
 
-        if (!encFile.exists()) {
+        File file = new File(encFile);
+        if (!file.exists()) {
             Log.e("i", "encrypt file created");
-            encFile.createNewFile();
+            file.createNewFile();
         }
 //        InputStream fis = new FileInputStream(srcFile);
         OutputStream fos = new FileOutputStream(encFile);
@@ -95,6 +96,6 @@ public class FileEncAndDec {
         fos.flush();
         fos.close();
 
-        return encFile.getAbsolutePath();
+        return encFile;
     }
 }
