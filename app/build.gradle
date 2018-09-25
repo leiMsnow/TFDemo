@@ -22,7 +22,14 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation project(':tfsdk')
+//    implementation(name: 'tfsdk-release', ext: 'aar') {
+//        transitive = true
+//    }
+//    implementation 'com.android.support:multidex:1.0.0'
 }
 repositories {
     mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
 }
