@@ -94,20 +94,18 @@ public class MultiBoxTracker {
   private int frameHeight;
 
   private int sensorOrientation;
-  private Context context;
 
   public MultiBoxTracker(final Context context) {
-    this.context = context;
     for (final int color : COLORS) {
       availableColors.add(color);
     }
 
-    boxPaint.setColor(Color.RED);
-    boxPaint.setStyle(Style.STROKE);
-    boxPaint.setStrokeWidth(12.0f);
-    boxPaint.setStrokeCap(Cap.ROUND);
-    boxPaint.setStrokeJoin(Join.ROUND);
-    boxPaint.setStrokeMiter(100);
+    boxPaint.setStyle(Style.FILL_AND_STROKE);
+//    boxPaint.setAlpha(200);
+//    boxPaint.setStrokeWidth(12.0f);
+//    boxPaint.setStrokeCap(Cap.SQUARE);
+//    boxPaint.setStrokeJoin(Join.MITER);
+//    boxPaint.setStrokeMiter(100);
 
     textSizePx =
         TypedValue.applyDimension(
@@ -119,42 +117,42 @@ public class MultiBoxTracker {
     return frameToCanvasMatrix;
   }
 
-  public synchronized void drawDebug(final Canvas canvas) {
-    final Paint textPaint = new Paint();
-    textPaint.setColor(Color.WHITE);
-    textPaint.setTextSize(60.0f);
-
-    final Paint boxPaint = new Paint();
-    boxPaint.setColor(Color.RED);
-    boxPaint.setAlpha(200);
-    boxPaint.setStyle(Style.STROKE);
-
-    for (final Pair<Float, RectF> detection : screenRects) {
-      final RectF rect = detection.second;
-      canvas.drawRect(rect, boxPaint);
-      canvas.drawText("" + detection.first, rect.left, rect.top, textPaint);
-      borderedText.drawText(canvas, rect.centerX(), rect.centerY(), "" + detection.first);
-    }
-
-    if (objectTracker == null) {
-      return;
-    }
-
-    // Draw correlations.
-    for (final TrackedRecognition recognition : trackedObjects) {
-      final ObjectTracker.TrackedObject trackedObject = recognition.trackedObject;
-
-      final RectF trackedPos = trackedObject.getTrackedPositionInPreviewFrame();
-
-      if (getFrameToCanvasMatrix().mapRect(trackedPos)) {
-        final String labelString = String.format("%.2f", trackedObject.getCurrentCorrelation());
-        borderedText.drawText(canvas, trackedPos.right, trackedPos.bottom, labelString);
-      }
-    }
-
-    final Matrix matrix = getFrameToCanvasMatrix();
-    objectTracker.drawDebug(canvas, matrix);
-  }
+//  public synchronized void drawDebug(final Canvas canvas) {
+//    final Paint textPaint = new Paint();
+//    textPaint.setColor(Color.WHITE);
+//    textPaint.setTextSize(60.0f);
+//
+//    final Paint boxPaint = new Paint();
+//    boxPaint.setColor(Color.RED);
+//    boxPaint.setAlpha(200);
+//    boxPaint.setStyle(Style.STROKE);
+//
+//    for (final Pair<Float, RectF> detection : screenRects) {
+//      final RectF rect = detection.second;
+//      canvas.drawRect(rect, boxPaint);
+//      canvas.drawText("" + detection.first, rect.left, rect.top, textPaint);
+//      borderedText.drawText(canvas, rect.centerX(), rect.centerY(), "" + detection.first);
+//    }
+//
+//    if (objectTracker == null) {
+//      return;
+//    }
+//
+//    // Draw correlations.
+//    for (final TrackedRecognition recognition : trackedObjects) {
+//      final ObjectTracker.TrackedObject trackedObject = recognition.trackedObject;
+//
+//      final RectF trackedPos = trackedObject.getTrackedPositionInPreviewFrame();
+//
+//      if (getFrameToCanvasMatrix().mapRect(trackedPos)) {
+//        final String labelString = String.format("%.2f", trackedObject.getCurrentCorrelation());
+//        borderedText.drawText(canvas, trackedPos.right, trackedPos.bottom, labelString);
+//      }
+//    }
+//
+//    final Matrix matrix = getFrameToCanvasMatrix();
+//    objectTracker.drawDebug(canvas, matrix);
+//  }
 
   public synchronized void trackResults(
           final List<Classifier.Recognition> results, final byte[] frame, final long timestamp) {
@@ -183,17 +181,19 @@ public class MultiBoxTracker {
 
       getFrameToCanvasMatrix().mapRect(trackedPos);
       boxPaint.setColor(recognition.color);
+      boxPaint.setAlpha(100);
+//      boxPaint.setARGB(100,100,100,100);
 
       final float cornerSize = Math.min(trackedPos.width(), trackedPos.height()) / 8.0f;
       canvas.drawRoundRect(trackedPos, cornerSize, cornerSize, boxPaint);
 
       final String labelString =
           !TextUtils.isEmpty(recognition.title)
-              ? String.format("检测到：%s 匹配度：%.2f ", recognition.title, recognition.detectionConfidence)
+              ? String.format("检测到：%s  ", recognition.title)
               : String.format("%.2f", recognition.detectionConfidence);
       borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.bottom, labelString);
     }
-  }
+}
 
   private boolean initialized = false;
 

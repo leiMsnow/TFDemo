@@ -125,15 +125,15 @@ public class DetectActivity extends CameraActivity implements ImageReader.OnImag
         cropToFrameTransform = new Matrix();
         frameToCropTransform.invert(cropToFrameTransform);
 
-        trackingOverlay = (OverlayView) findViewById(R.id.tracking_overlay);
+        trackingOverlay = findViewById(R.id.tracking_overlay);
         trackingOverlay.addCallback(
                 new OverlayView.DrawCallback() {
                     @Override
                     public void drawCallback(final Canvas canvas) {
                         tracker.draw(canvas);
-                        if (isDebug()) {
-                            tracker.drawDebug(canvas);
-                        }
+//                        if (isDebug()) {
+//                            tracker.drawDebug(canvas);
+//                        }
                     }
                 });
     }
