@@ -1,0 +1,86 @@
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = "ray.sdk.tf"
+version = "0.0.1"
+
+def siteUrl = 'https://github.com/leiMsnow/TFDemo'
+def issuesUrl = 'https://github.com/leiMsnow/TFDemo/issues'
+def gitUrl = 'https://github.com/leiMsnow/TFDemo'
+
+install {
+    repositories.mavenInstaller.pom.project {
+        packaging 'jar'
+        name 'tfsdk'
+        artifactId 'tfsdk'
+        description 'tfsdk.'
+        url siteUrl
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            }
+        }
+        developers {
+            developer {
+                id 'always_0122'
+                name 'always_0122'
+                email 'always_0122@163.com'
+            }
+        }
+    }
+}
+
+task jar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    options.encoding = 'UTF-8'
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    failOnError false
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+bintray {
+    Properties properties = new Properties()
+    boolean hasLocalFile = false
+    if (project.rootProject.file('local.properties').exists()) {
+        hasLocalFile = true
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    }
+    user = hasLocalFile ? properties.getProperty("bintray.user") : ""
+    key = hasLocalFile ? properties.getProperty("bintray.apikey") : ""
+
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "tfsdk"
+        websiteUrl = siteUrl
+        issueTrackerUrl = issuesUrl
+        vcsUrl = gitUrl
+        labels = ["tfsdk", "Android"]
+        licenses = ["Apache-2.0"]
+        publicDownloadNumbers = true
+        publish = true
+    }
+}
+
+// ./gradlew install
+// ./gradlew bintrayUpload

@@ -8,7 +8,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
     }
 
     buildTypes {
@@ -28,3 +28,5 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     api 'org.tensorflow:tensorflow-android:1.10.0'
 }
+
+apply from :'publish.gradle'
